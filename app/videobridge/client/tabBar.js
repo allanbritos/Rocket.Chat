@@ -5,6 +5,8 @@ import { Session } from 'meteor/session';
 import { settings } from '../../settings';
 import { TabBar } from '../../ui-utils';
 import { Rooms } from '../../models';
+import { hasRole } from '../../authorization';
+
 
 Meteor.startup(function() {
 	Tracker.autorun(function() {
@@ -39,7 +41,7 @@ Meteor.startup(function() {
 	});
 
 	Tracker.autorun(function() {
-		if (settings.get('Jitsi_Enabled')) {
+		if (settings.get('Jitsi_Enabled') && !hasRole(Meteor.userId(), ['agent'])) {
 			TabBar.addButton({
 				groups: ['direct', 'group'],
 				id: 'video',
@@ -57,9 +59,14 @@ Meteor.startup(function() {
 
 	Tracker.autorun(function() {
 		if (settings.get('Jitsi_Enabled') && settings.get('Jitsi_Enable_Channels')) {
-			TabBar.addGroup('video', ['channel']);
+			if (!hasRole(Meteor.userId(), 'agent')) {
+				TabBar.addGroup('video', ['channel', 'group']);
+			}
 		} else {
-			TabBar.removeGroup('video', ['channel']);
+			TabBar.removeGroup('video', ['channel', 'group']);
+		}
+		if (!hasRole(Meteor.userId(), 'agent')) {
+			TabBar.removeGroup('video', ['channel', 'group']);
 		}
 	});
 

@@ -1,3 +1,4 @@
+import { Meteor } from 'meteor/meteor';
 import React, { useMemo, useState, useCallback, useEffect } from 'react';
 import { Box, Table, Flex, Avatar, TextInput, Icon } from '@rocket.chat/fuselage';
 import { useMediaQuery } from '@rocket.chat/fuselage-hooks';
@@ -10,6 +11,7 @@ import { useQuery } from './hooks';
 import { getUserAvatarURL } from '../../../app/utils/client';
 import { useEndpointData } from '../../hooks/useEndpointData';
 import { useFormatDate } from '../../hooks/useFormatDate';
+import { hasRole } from '../../../app/authorization';
 import NotAuthorizedPage from '../../admin/NotAuthorizedPage';
 
 const style = { whiteSpace: 'nowrap', textOverflow: 'ellipsis', overflow: 'hidden' };
@@ -104,8 +106,7 @@ function UserTable({
 			</Table.Cell>}
 		</Table.Row>;
 	}, [mediaQuery, federation, canViewFullOtherUserInfo, formatDate, onClick]);
-
-	return <GenericTable FilterComponent={FilterByText} header={header} renderRow={renderRow} results={data.result} total={data.total} setParams={setParams} />;
+	return <GenericTable FilterComponent={ FilterByText } header={ header } renderRow={ renderRow } results={ data.result } total={ data.total } setParams={ setParams }/>;
 }
 
 export default function UserTab(props) {
@@ -113,7 +114,9 @@ export default function UserTab(props) {
 	const canViewDM = usePermission('view-d-room');
 
 	if (canViewOutsideRoom && canViewDM) {
-		return <UserTable {...props} />;
+		if (!hasRole(Meteor.userId(), 'agent')) {
+			return <UserTable { ...props } />;
+		}
 	}
 
 	return <NotAuthorizedPage />;

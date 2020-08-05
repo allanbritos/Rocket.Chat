@@ -255,14 +255,23 @@ callbacks.add('enter-room', wipeFailedUploads);
 
 export const dropzoneHelpers = {
 	dragAndDrop() {
+		if (hasRole(Meteor.userId(), 'agent')) {
+			return 'dropzone--disabled';
+		}
 		return settings.get('FileUpload_Enabled') && 'dropzone--disabled';
 	},
 
 	isDropzoneDisabled() {
+		if (hasRole(Meteor.userId(), 'agent')) {
+			return 'dropzone-overlay--disabled';
+		}
 		return settings.get('FileUpload_Enabled') ? 'dropzone-overlay--enabled' : 'dropzone-overlay--disabled';
 	},
 
 	dragAndDropLabel() {
+		if (hasRole(Meteor.userId(), 'agent')) {
+			return 'error-not-allowed';
+		}
 		if (!userCanDrop(this._id)) {
 			return 'error-not-allowed';
 		}
@@ -622,7 +631,7 @@ export const dropzoneEvents = {
 		e.stopPropagation();
 		e.preventDefault();
 
-		if (!userCanDrop(this._id) || !settings.get('FileUpload_Enabled')) {
+		if (!userCanDrop(this._id) || !settings.get('FileUpload_Enabled') || hasRole(Meteor.userId(), 'agent')) {
 			return false;
 		}
 

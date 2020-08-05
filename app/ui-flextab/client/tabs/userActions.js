@@ -192,17 +192,19 @@ export const getActions = ({ user, directActions, hideAdminControls }) => {
 				return;
 			}
 			if (canBlockUser()) {
+				/*
 				return {
 					icon: 'ban',
 					name: t('Unblock_User'),
 					action: prevent(getUser, ({ _id }) => Meteor.call('unblockUser', { rid: Session.get('openedRoom'), blocked: _id }, success(() => toastr.success(t('User_is_unblocked'))))),
-				};
+				};*/
 			}
 			return {
+				/*
 				icon: 'ban',
 				name: t('Block_User'),
 				modifier: 'alert',
-				action: prevent(getUser, ({ _id }) => Meteor.call('blockUser', { rid: Session.get('openedRoom'), blocked: _id }, success(() => toastr.success(t('User_is_blocked'))))),
+				action: prevent(getUser, ({ _id }) => Meteor.call('blockUser', { rid: Session.get('openedRoom'), blocked: _id }, success(() => toastr.success(t('User_is_blocked'))))),*/
 			};
 		}, () => {
 			if (!directActions || !canSetOwner()) {
@@ -336,10 +338,11 @@ export const getActions = ({ user, directActions, hideAdminControls }) => {
 				};
 			}
 			return {
+				/*
 				group: 'channel',
 				icon: 'ban',
 				name: t('Ignore'),
-				action: prevent(getUser, ({ _id }) => Meteor.call('ignoreUser', { rid: Session.get('openedRoom'), userId: _id, ignore: true }, success(() => toastr.success(t('User_has_been_ignored'))))),
+				action: prevent(getUser, ({ _id }) => Meteor.call('ignoreUser', { rid: Session.get('openedRoom'), userId: _id, ignore: true }, success(() => toastr.success(t('User_has_been_ignored'))))),*/
 			};
 		}, () => {
 			if (!directActions || !canMuteUser()) {

@@ -27,8 +27,30 @@ export function isUserInLDAPGroup(ldap, ldapUser, user, ldapGroup) {
 		logger.error('Please setup LDAP Group Filter and LDAP Group BaseDN in LDAP Settings.');
 		return false;
 	}
+	let username = user.username.toLowerCase();
+	if (syncUserRolesFilter.includes('userPrincipalName')) {
+		try {
+			const parts = username.split('.');
+			username = '';
+			for (let i = 0; i < parts.length; i++) {
+				if (i === parts.length - 3) {
+					username += `@${ parts[i] }`;
+				} else {
+					// eslint-disable-next-line no-lonely-if
+					if (username === '') {
+						username = parts[i];
+					} else {
+						username += `.${ parts[i] }`;
+					}
+				}
+			}
+		} catch (e) {
+			logger.error(`${ user.username } doesn't have an email address defined ${ user.emails }`);
+		}
+	}
 	const searchOptions = {
-		filter: syncUserRolesFilter.replace(/#{username}/g, user.username).replace(/#{groupName}/g, ldapGroup).replace(/#{userdn}/g, ldapUser.dn),
+		// filter: syncUserRolesFilter.replace(/#{username}/g, username).replace(/#{groupName}/g, ldapGroup).replace(/#{userdn}/g, ldapUser.dn),
+		filter: syncUserRolesFilter.replace(/#{username}/g, username).replace(/#{groupName}/g, ldapGroup),
 		scope: 'sub',
 	};
 
@@ -244,34 +266,39 @@ export function mapLdapGroupsToUserRoles(ldap, ldapUser, user) {
 		}
 
 		const userField = fieldMap[ldapField];
+		const roles2map = userField.split(',');
 
-		const [roleName] = userField.split(/\.(.+)/);
-		if (!_.find(roles, (el) => el._id === roleName)) {
-			logger.debug(`User Role doesn't exist: ${ roleName }`);
-			continue;
-		}
+		for (let index = 0; index < roles2map.length; index++) {
+			const [roleName] = userField.split(/\.(.+)/);
+			if (!_.find(roles, (el) => el._id === roleName)) {
+				logger.debug(`User Role doesn't exist: ${ roleName }`);
+				continue;
+			} else {
+				logger.debug(`User Role exist: ${ roleName }`);
+			}
 
-		logger.debug(`User role exists for mapping ${ ldapField } -> ${ roleName }`);
+			logger.debug(`User role exists for mapping ${ ldapField } -> ${ roleName }`);
 
-		if (isUserInLDAPGroup(ldap, ldapUser, user, ldapField)) {
-			userRoles.push(roleName);
-			continue;
-		}
+			if (isUserInLDAPGroup(ldap, ldapUser, user, ldapField)) {
+				userRoles.push(roleName);
+				continue;
+			}
 
-		if (!syncUserRolesAutoRemove) {
-			continue;
-		}
+			if (!syncUserRolesAutoRemove) {
+				continue;
+			}
 
-		const del = Roles.removeUserRoles(user._id, roleName);
-		if (settings.get('UI_DisplayRoles') && del) {
-			Notifications.notifyLogged('roles-change', {
-				type: 'removed',
-				_id: roleName,
-				u: {
-					_id: user._id,
-					username: user.username,
-				},
-			});
+			const del = Roles.removeUserRoles(user._id, roleName);
+			if (settings.get('UI_DisplayRoles') && del) {
+				Notifications.notifyLogged('roles-change', {
+					type: 'removed',
+					_id: roleName,
+					u: {
+						_id: user._id,
+						username: user.username,
+					},
+				});
+			}
 		}
 	}
 

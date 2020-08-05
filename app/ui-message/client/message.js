@@ -18,6 +18,7 @@ import { upsertMessage } from '../../ui-utils/client/lib/RoomHistoryManager';
 import './message.html';
 import './messageThread';
 import { AutoTranslate } from '../../autotranslate/client';
+import { hasRole } from '../../authorization';
 
 
 const renderBody = (msg, settings) => {
@@ -459,6 +460,9 @@ Template.message.helpers({
 	showStar() {
 		const { msg } = this;
 		return msg.starred && !(msg.actionContext === 'starred' || this.context === 'starred');
+	},
+	isAgent() {
+		return hasRole(Meteor.userId(), 'agent');
 	},
 });
 

@@ -183,6 +183,7 @@
 				</div>
 			{{/unless}}
 			{{#unless hideActionLinks}}
+			{{#unless isAgent}}
 			<ul class="actionLinks">
 				{{#each actionLink in actionLinks}}
 					<li class="color-primary-action-color">
@@ -199,6 +200,7 @@
 					</li>
 				{{/each}}
 			</ul>
+			{{/unless}}
 			{{/unless}}
 			{{#if broadcast}}
 				{{#with msg}}
