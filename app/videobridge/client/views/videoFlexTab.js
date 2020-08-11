@@ -110,7 +110,27 @@ Template.videoFlexTab.onRendered(function() {
 				return stop();
 			}
 
-			const domain = settings.get('Jitsi_Domain');
+			const { customFields } = Users.findOne(Meteor.userId(), { fields: { customFields: 1 } });
+			const loc = customFields.location;
+			let prefix = '';
+			switch (loc) {
+				case 'Guatemala':
+					prefix = 'gua';
+					break;
+				case 'Bangalore':
+					prefix = 'brl';
+					break;
+				case 'Hyderabad':
+					prefix = 'hyd';
+					break;
+				case 'Dallas':
+					prefix = 'dal';
+					break;
+				default:
+					prefix = loc;
+			}
+			const location = `${ prefix }-` || '';
+			const domain = location + settings.get('Jitsi_Domain');
 			const jitsiRoom = settings.get('Jitsi_URL_Room_Prefix') + settings.get('uniqueID') + rid + settings.get('Jitsi_URL_Room_Suffix');
 			const noSsl = !settings.get('Jitsi_SSL');
 			const isEnabledTokenAuth = settings.get('Jitsi_Enabled_TokenAuth');
