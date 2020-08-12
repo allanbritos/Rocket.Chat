@@ -118,7 +118,7 @@ Template.videoFlexTab.onRendered(function() {
 					prefix = 'gua';
 					break;
 				case 'Bangalore':
-					prefix = 'brl';
+					prefix = 'blr';
 					break;
 				case 'Hyderabad':
 					prefix = 'hyd';
