@@ -130,6 +130,9 @@ Template.videoFlexTab.onRendered(function() {
 				case 'DAL':
 					prefix = 'dal-';
 					break;
+				case 'PH':
+					prefix = 'ph-';
+					break;
 				default:
 					prefix = loc;
 			}
