@@ -118,16 +118,16 @@ Template.videoFlexTab.onRendered(function() {
 			const loc = customFields.location;
 			let prefix = '';
 			switch (loc) {
-				case 'Guatemala':
+				case 'GUA':
 					prefix = 'gua-';
 					break;
-				case 'Bangalore':
+				case 'BLR':
 					prefix = 'blr-';
 					break;
-				case 'Hyderabad':
+				case 'HYD':
 					prefix = 'hyd-';
 					break;
-				case 'Dallas':
+				case 'DAL':
 					prefix = 'dal-';
 					break;
 				default:
