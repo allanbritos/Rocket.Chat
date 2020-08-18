@@ -62,11 +62,6 @@ Meteor.startup(function() {
 			if (!hasRole(Meteor.userId(), 'agent')) {
 				TabBar.addGroup('video', ['channel', 'group']);
 			}
-		} else {
-			TabBar.removeGroup('video', ['channel', 'group']);
-		}
-		if (!hasRole(Meteor.userId(), 'agent')) {
-			TabBar.removeGroup('video', ['channel', 'group']);
 		}
 	});
 

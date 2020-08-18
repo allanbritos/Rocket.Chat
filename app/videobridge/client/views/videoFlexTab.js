@@ -130,12 +130,17 @@ Template.videoFlexTab.onRendered(function() {
 				case 'DAL':
 					prefix = 'dal-';
 					break;
-				case 'PH':
-					prefix = 'ph-';
+				case 'PHP':
+					prefix = 'php-';
 					break;
 				default:
 					prefix = loc;
 			}
+			const absUrl = Meteor.absoluteUrl();
+			if (absUrl === 'http://localhost:3000/' || absUrl === 'https://rchat-stage.247.ai/') {
+				prefix = '';
+			}
+
 			const location = `${ prefix }` || '';
 			const domain = location + settings.get('Jitsi_Domain');
 			const jitsiRoom = settings.get('Jitsi_URL_Room_Prefix') + settings.get('uniqueID') + rid + settings.get('Jitsi_URL_Room_Suffix');
