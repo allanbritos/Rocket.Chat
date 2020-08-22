@@ -41,7 +41,7 @@ Meteor.startup(function() {
 	});
 
 	Tracker.autorun(function() {
-		if (settings.get('Jitsi_Enabled') && !hasRole(Meteor.userId(), ['agent'])) {
+		if (settings.get('Jitsi_Enabled')) {
 			TabBar.addButton({
 				groups: ['channel', 'direct', 'group'],
 				id: 'video',
@@ -62,6 +62,11 @@ Meteor.startup(function() {
 			if (!hasRole(Meteor.userId(), 'agent')) {
 				TabBar.addGroup('video', ['channel', 'group']);
 			}
+		} else {
+			TabBar.removeGroup('video', ['channel', 'group']);
+		}
+		if (hasRole(Meteor.userId(), 'agent')) {
+			TabBar.removeGroup('video', ['channel', 'group']);
 		}
 	});
 

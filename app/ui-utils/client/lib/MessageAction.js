@@ -155,6 +155,7 @@ Meteor.startup(async function() {
 
 		return chatMessages[`${ rid }-${ tmid }`] || chatMessages[rid];
 	};
+
 	if (!hasRole(Meteor.userId(), 'agent')) {
 		MessageAction.addButton({
 			id: 'reply-directly',

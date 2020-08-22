@@ -4,10 +4,11 @@ import { Tracker } from 'meteor/tracker';
 import { messageBox, modal } from '../../ui-utils/client';
 import { t } from '../../utils/client';
 import { settings } from '../../settings/client';
+import { hasRole } from '../../authorization';
 
 Meteor.startup(function() {
 	Tracker.autorun(() => {
-		if (!settings.get('Discussion_enabled')) {
+		if (!settings.get('Discussion_enabled') || hasRole(Meteor.userId(), 'agent')) {
 			return messageBox.actions.remove('Create_new', /start-discussion/);
 		}
 		messageBox.actions.add('Create_new', 'Discussion', {

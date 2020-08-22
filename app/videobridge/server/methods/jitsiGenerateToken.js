@@ -33,6 +33,7 @@ Meteor.methods({
 					roles: user.roles,
 					avatar: Meteor.absoluteUrl(`avatar/${ user.username }`),
 					id: user._id,
+					room: room._id,
 				},
 			};
 
